@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Administrator
@@ -44,6 +48,8 @@ public class DataServiceImpl implements DataService {
     private DataSync dataSync;
 
     private List<DataEntity> list=new ArrayList<>();
+
+    ExecutorService executorService = new ThreadPoolExecutor(30, Integer.MAX_VALUE, 2, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
 
     @Override
     public void insertData(DataEntity dataEntity) {
@@ -81,6 +87,12 @@ public class DataServiceImpl implements DataService {
                 dataEntity.setTitle(i.getName());
                 dataEntity.setUrl("https://"+userInfo+"@"+url+path);
                 list.add(dataEntity);
+                if (nextToken!=null){
+                    this.getData(path);
+                }else{
+                    this.getData(path+i.getName());
+                    return;
+                }
             }
 
         });

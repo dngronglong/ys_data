@@ -6,4 +6,6 @@ import java.util.List;
 public class Data {
 
     private List<Files> files;
+
+    private String nextPageToken;
 }
